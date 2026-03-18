@@ -10,107 +10,112 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Montserrat', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; padding: 40px 20px; }
         .container { max-width: 850px; margin: auto; }
-        header { text-align: center; margin-bottom: 40px; }
-        h1 { font-family: 'Cormorant Garamond', serif; font-size: 2.8rem; color: var(--primary); }
+        header { text-align: center; margin-bottom: 40px; border-bottom: 1px solid #eee; padding-bottom: 20px; }
+        h1 { font-family: 'Cormorant Garamond', serif; font-size: 2.8rem; color: var(--primary); margin-bottom: 10px; }
         .bloco { background: white; padding: 30px; border-radius: 16px; box-shadow: var(--shadow); margin-bottom: 30px; }
         h2 { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; color: var(--accent); margin-bottom: 20px; border-bottom: 2px solid #f1f1f1; padding-bottom: 10px; }
         .campo-contato { margin-bottom: 15px; }
-        .campo-contato input { width: 100%; padding: 15px; border: 2px solid #eee; border-radius: 10px; font-family: 'Montserrat'; font-size: 1rem; }
-        .questao { margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #f9f9f9; }
-        .opcoes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 10px; }
-        .option-label { display: block; text-align: center; padding: 10px; border: 2px solid #eee; border-radius: 8px; cursor: pointer; font-weight: 600; }
+        .campo-contato label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9rem; }
+        .campo-contato input { width: 100%; padding: 15px; border: 2px solid #eee; border-radius: 10px; font-family: 'Montserrat'; font-size: 1rem; outline: none; }
+        .questao { margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #f9f9f9; }
+        .questao-texto { font-weight: 500; font-size: 1.05rem; display: block; margin-bottom: 15px; }
+        .opcoes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .option-label { display: block; text-align: center; padding: 12px; border: 2px solid #eee; border-radius: 10px; cursor: pointer; font-weight: 600; transition: 0.3s; }
         input[type="radio"] { display: none; }
         input:checked + .option-label { background: var(--accent); color: white; border-color: var(--accent); }
-        .btn-submit { display: block; width: 100%; padding: 20px; background: var(--accent); color: white; border: none; border-radius: 50px; font-weight: 600; cursor: pointer; font-size: 1.2rem; }
-        #resultado { display: none; background: white; padding: 40px; border-radius: 20px; box-shadow: var(--shadow); text-align: center; }
+        .btn-submit { display: block; width: 100%; max-width: 400px; margin: 40px auto; padding: 20px; background: var(--accent); color: white; border: none; border-radius: 50px; font-weight: 600; cursor: pointer; font-size: 1.2rem; transition: 0.3s; text-align: center; text-decoration: none; }
+        .btn-whatsapp { display: none; width: 100%; max-width: 400px; margin: 20px auto; padding: 20px; background: #25d366; color: white; border-radius: 50px; font-weight: 700; text-decoration: none; font-size: 1.1rem; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        #resultado { display: none; background: white; padding: 50px; border-radius: 20px; box-shadow: var(--shadow); text-align: center; border-top: 10px solid var(--accent); }
         @media (max-width: 600px) { .opcoes { grid-template-columns: repeat(4, 1fr); } }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <header><h1>Termômetro SOMA</h1></header>
+    <header><h1>Termômetro SOMA</h1><p style="font-style: italic; color: #7f8c8d;">O Check-up da Saúde Relacional</p></header>
 
     <form id="somaForm">
         <div class="bloco">
             <h2>Identificação</h2>
-            <div class="campo-contato"><input type="text" name="nome" id="nome" placeholder="Seu Nome Completo" required></div>
-            <div class="campo-contato"><input type="tel" name="whatsapp" id="whatsapp" placeholder="Seu WhatsApp (com DDD)" required></div>
+            <div class="campo-contato"><label>Nome Completo:</label><input type="text" id="nome" placeholder="Ex: Maria Silva" required></div>
+            <div class="campo-contato"><label>WhatsApp:</label><input type="tel" id="whatsapp" placeholder="(11) 99999-9999" required></div>
         </div>
-
         <div id="questoesArea"></div>
-        <button type="button" class="btn-submit" id="btnEnviar" onclick="calcular()">VER RESULTADO DO CHECK-UP</button>
+        <button type="button" class="btn-submit" id="btnEnviar" onclick="calcular()">VER MEU RESULTADO</button>
     </form>
 
     <div id="resultado">
-        <h2 id="resTitulo"></h2>
-        <div style="font-size: 3rem; font-weight: bold;" id="resScore"></div>
-        <p id="resTexto" style="margin: 20px 0;"></p>
-        <button onclick="location.reload()" style="background: none; border: underline; cursor: pointer;">Refazer Teste</button>
+        <div style="font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; margin-bottom: 10px;" id="resTitulo"></div>
+        <div style="font-size: 3.5rem; font-weight: 700; margin-bottom: 15px;" id="resScore"></div>
+        <p id="resTexto" style="margin-bottom: 30px; font-size: 1.1rem;"></p>
+        
+        <a href="#" id="linkWhats" target="_blank" class="btn-whatsapp">INICIAR MEU PLANO DE RESGATE</a>
+        
+        <br><button onclick="location.reload()" style="background: none; border: none; text-decoration: underline; color: #7f8c8d; cursor: pointer; margin-top: 20px;">Refazer Teste</button>
     </div>
 </div>
 
 <script>
-    const scriptURL = 'COLE_AQUI_SEU_LINK_DO_GOOGLE_SCRIPT'; // <--- COLOQUE SEU LINK AQUI!
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbxD9Z420vaXB1-AvjUdwRo2CHrsLnZnNfh7OvZTPAj42h2jBDso4na7X0vehGCauwLN/exec';
 
     const perguntas = [
-        { t: "BLOCODE 1: Comunicação", q: ["Conseguimos conversar sobre assuntos difíceis sem briga.","Sinto que meu parceiro(a) realmente me escuta.","Rimos juntos de coisas bobas.","Transparência total financeira.","Silêncio confortável."] },
-        { t: "BLOCO 2: Intimidade", q: ["Contato físico é natural.","Sinto desejo.","Vida sexual espontânea.","Respeito ao corpo.","Sinto admiração."] },
-        { t: "BLOCO 3: Projetos", q: ["Planos para o futuro com entusiasmo.","Objetivos em comum.","Time diante dos problemas.","Envelhecer traz paz.","Disposição para investir."] },
-        { t: "BLOCO 4: Fronteiras", q: ["Prioridade ao casal sobre família de origem.","Parceiro adulto.","Respeito à história.","Sogros não interferem.","Equilíbrio justo."] },
-        { t: "BLOCO 5: Resiliência", q: ["Brigas focam no problema.","Posso ser eu mesmo.","Pedir e liberar perdão.","União na crise.","Alegria com conquistas."] },
-        { t: "BLOCO 6: Vitalidade", q: ["Corpo relaxado com o outro.","Energia aumenta juntos.","Diria 'Sim' novamente.","Prioriza bem-estar.","Peso equilibrado."] }
+        { t: "BLOCO 1: Comunicação e Conexão", q: ["Conseguimos conversar sobre assuntos difíceis sem que isso termine em briga ou silêncio punitivo.", "Sinto que meu parceiro(a) realmente me escuta.", "Ainda temos o hábito de rir juntos de coisas bobas do cotidiano.", "Existe transparência total sobre a nossa vida financeira.", "Quando estamos em silêncio, é um silêncio confortável."] },
+        { t: "BLOCO 2: Intimidade e Desejo", q: ["O contato físico (toque, carinho, abraço) é natural entre nós.", "Eu sinto desejo pelo meu parceiro(a).", "Nossa vida sexual é um espaço de prazer e conexão espontânea.", "Sinto que minha privacidade e meu corpo são respeitados.", "Sinto que meu parceiro(a) me admira e expressa isso."] },
+        { t: "BLOCO 3: Projetos e Futuro", q: ["Nossos planos para o futuro incluem o outro com entusiasmo.", "Temos objetivos em comum que nos fazem caminhar juntos.", "Sinto que somos uma equipe diante dos problemas.", "A ideia de envelhecer ao lado desta pessoa me traz paz.", "Existe disposição real para investir na melhora da relação."] },
+        { t: "BLOCO 4: Dinâmica Sistêmica e Fronteiras", q: ["Consigo dizer 'não' para minha família de origem para priorizar o casal.", "Sinto que meu parceiro(a) ocupa o lugar de 'adulto'.", "Respeitamos a história um do outro sem usar traumas como munição.", "Nossos pais não interferem nas decisões do casal.", "Sinto que o equilíbrio entre 'dar e receber' é justo."] },
+        { t: "BLOCO 5: Resiliência e Conflito", q: ["Quando brigamos, focamos em resolver o problema e não em atacar.", "Sinto que posso ser eu mesma(o) nesta relação.", "Temos a capacidade de pedir e liberar o perdão.", "Diante de uma crise externa, nos unimos em vez de buscar culpados.", "Sinto que meu parceiro(a) se alegra com minhas conquistas."] },
+        { t: "BLOCO 6: Vitalidade e Exaustão", q: ["Meu corpo se sente relaxado e seguro com meu parceiro(a).", "Minha energia vital aumenta quando estamos juntos.", "Se tivéssemos que casar hoje novamente, eu diria 'Sim'.", "Sinto que meu parceiro(a) prioriza o nosso bem-estar.", "O peso da rotina e responsabilidades é equilibrado."] }
     ];
 
     const area = document.getElementById('questoesArea');
     perguntas.forEach((bloco, bIdx) => {
-        let h = `<div class="bloco"><h2>${bloco.t}</h2>`;
+        let html = `<div class="bloco"><h2>${bloco.t}</h2>`;
         bloco.q.forEach((q, qIdx) => {
             let id = `q_${bIdx}_${qIdx}`;
-            h += `<div class="questao"><span>${q}</span><div class="opcoes">` + 
+            html += `<div class="questao"><span class="questao-texto">${q}</span><div class="opcoes">` + 
                 [1,2,3,4].map(v => `<div class="option-field"><input type="radio" name="${id}" id="${id}_${v}" value="${v}" required><label for="${id}_${v}" class="option-label">${v}</label></div>`).join('') + 
                 `</div></div>`;
         });
-        area.innerHTML += h + `</div>`;
+        area.innerHTML += html + `</div>`;
     });
 
     async function calcular() {
-        const form = document.getElementById('somaForm');
         const nome = document.getElementById('nome').value;
         const whats = document.getElementById('whatsapp').value;
+        if(!nome || !whats) { alert("Preencha Nome e WhatsApp."); return; }
         
-        if(!nome || !whats) { alert("Preencha seu nome e WhatsApp"); return; }
-        
-        const fd = new FormData(form);
+        const fd = new FormData(document.getElementById('somaForm'));
         let t = 0; let count = 0;
-        for (let v of fd.values()) { if(!isNaN(v)){ t += parseInt(v); count++; } }
-        
-        if (count < 30) { alert("Responda todas as 30 questões."); return; }
+        for (let v of fd.values()) { if(!isNaN(v) && v!==""){ t += parseInt(v); count++; } }
+        if (count < 30) { alert("Responda todas as 30 perguntas."); return; }
 
-        document.getElementById('btnEnviar').innerText = "Enviando diagnóstico...";
+        document.getElementById('btnEnviar').innerText = "Processando...";
         document.getElementById('btnEnviar').disabled = true;
 
-        let diag = t >= 95 ? "Saudável" : (t >= 60 ? "Alerta" : "Crítico");
+        let diag = t >= 95 ? "SAUDÁVEL" : (t >= 60 ? "ALERTA" : "CRÍTICO");
 
-        // Enviar para o Google Sheets
         try {
-            await fetch(scriptURL, {
-                method: 'POST',
-                mode: 'no-cors',
-                body: JSON.stringify({ nome: nome, whatsapp: whats, pontuacao: t, diagnostico: diag })
-            });
-        } catch (e) { console.error("Erro ao salvar", e); }
+            await fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ nome: nome, whatsapp: whats, pontuacao: t, diagnostico: diag }) });
+        } catch (e) { console.error(e); }
 
-        form.style.display = 'none';
+        document.getElementById('somaForm').style.display = 'none';
         document.getElementById('resultado').style.display = 'block';
-        document.getElementById('resScore').innerText = t + " pts";
+        document.getElementById('resScore').innerText = t + " PONTOS";
         
         const tit = document.getElementById('resTitulo');
         const txt = document.getElementById('resTexto');
+        const btnWhats = document.getElementById('linkWhats');
 
-        if (t >= 95) { tit.innerText = "🌿 SAUDÁVEL"; txt.innerText = "Manutenção e blindagem."; }
-        else if (t >= 60) { tit.innerText = "⚠️ ALERTA"; txt.innerText = "Existem feridas que precisam de intervenção."; }
-        else { tit.innerText = "🚨 CRÍTICO"; txt.innerText = "Relação na UTI. Decida pela sua saúde mental."; }
+        if (t >= 95) { tit.innerText = "🌿 ORGANISMO SAUDÁVEL"; tit.style.color = "#27ae60"; txt.innerText = "Seu relacionamento tem saúde. O foco agora é manutenção e blindagem."; }
+        else if (t >= 60) { tit.innerText = "⚠️ ALERTA DE INFECÇÃO"; tit.style.color = "#f39c12"; txt.innerText = "Existem feridas que precisam de intervenção. O prognóstico não é bom se ignorado."; }
+        else { tit.innerText = "🚨 ESTADO CRÍTICO (UTI)"; tit.style.color = "#c0392b"; txt.innerText = "Sua relação está respirando por aparelhos. Decida pela sua saúde mental agora."; }
+
+        // Configurar Link do WhatsApp
+        const msg = window.encodeURIComponent(`Olá Simone! Acabei de fazer o Termômetro SOMA.\n\nNome: ${nome}\nPontuação: ${t} pontos (${diag})\n\nQuero iniciar meu Plano de Resgate.`);
+        btnWhats.href = `https://wa.me/5511994215606?text=${msg}`;
+        btnWhats.style.display = 'block';
+
         window.scrollTo(0,0);
     }
 </script>

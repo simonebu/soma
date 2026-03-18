@@ -3,65 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Termômetro SOMA</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+    <title>Termômetro SOMA - Check-up Relacional</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #2c3e50; --accent: #b59410; --bg: #fbfcfc; }
-        body { font-family: 'Montserrat', sans-serif; background: var(--bg); color: var(--primary); padding: 20px; }
-        .container { max-width: 800px; margin: auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-        h1 { font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; text-align: center; color: var(--primary); }
-        .bloco { margin-bottom: 30px; padding: 20px; border-radius: 10px; border: 1px solid #eee; }
-        h2 { font-size: 1.2rem; color: var(--accent); border-bottom: 1px solid #eee; padding-bottom: 10px; }
-        .questao { margin: 20px 0; }
+        :root { --primary: #2c3e50; --accent: #b59410; --bg: #fbfcfc; --text: #34495e; --shadow: 0 10px 30px rgba(0,0,0,0.08); }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Montserrat', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; padding: 40px 20px; }
+        .container { max-width: 850px; margin: auto; }
+        header { text-align: center; margin-bottom: 40px; }
+        h1 { font-family: 'Cormorant Garamond', serif; font-size: 2.8rem; color: var(--primary); }
+        .bloco { background: white; padding: 30px; border-radius: 16px; box-shadow: var(--shadow); margin-bottom: 30px; }
+        h2 { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; color: var(--accent); margin-bottom: 20px; border-bottom: 2px solid #f1f1f1; padding-bottom: 10px; }
+        .campo-contato { margin-bottom: 15px; }
+        .campo-contato input { width: 100%; padding: 15px; border: 2px solid #eee; border-radius: 10px; font-family: 'Montserrat'; font-size: 1rem; }
+        .questao { margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #f9f9f9; }
         .opcoes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 10px; }
-        .option-field { position: relative; }
-        .option-field input { position: absolute; opacity: 0; }
-        .option-label { display: block; text-align: center; padding: 10px; border: 1px solid #ddd; border-radius: 5px; cursor: pointer; }
+        .option-label { display: block; text-align: center; padding: 10px; border: 2px solid #eee; border-radius: 8px; cursor: pointer; font-weight: 600; }
+        input[type="radio"] { display: none; }
         input:checked + .option-label { background: var(--accent); color: white; border-color: var(--accent); }
-        .btn { width: 100%; padding: 20px; background: var(--accent); color: white; border: none; border-radius: 50px; font-weight: bold; cursor: pointer; font-size: 1.1rem; }
-        #resultado { display: none; text-align: center; padding: 30px; animation: fadeIn 0.5s; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .btn-submit { display: block; width: 100%; padding: 20px; background: var(--accent); color: white; border: none; border-radius: 50px; font-weight: 600; cursor: pointer; font-size: 1.2rem; }
+        #resultado { display: none; background: white; padding: 40px; border-radius: 20px; box-shadow: var(--shadow); text-align: center; }
+        @media (max-width: 600px) { .opcoes { grid-template-columns: repeat(4, 1fr); } }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header><h1>🌡️ Termômetro SOMA</h1><p style="text-align:center; font-style:italic; color:#7f8c8d">Responda de 1 a 4 conforme sua realidade atual.</p></header>
-        <form id="somaForm"><div id="area"></div><button type="button" class="btn" onclick="calcular()">VER RESULTADO</button></form>
-        <div id="resultado"><h2 id="resTitulo" style="font-size:2rem"></h2><div id="resScore" style="font-size:3rem; font-weight:bold; margin:20px 0"></div><p id="resTexto"></p><button class="btn" onclick="location.reload()" style="background:#7f8c8d; margin-top:20px">Refazer</button></div>
+
+<div class="container">
+    <header><h1>Termômetro SOMA</h1></header>
+
+    <form id="somaForm">
+        <div class="bloco">
+            <h2>Identificação</h2>
+            <div class="campo-contato"><input type="text" name="nome" id="nome" placeholder="Seu Nome Completo" required></div>
+            <div class="campo-contato"><input type="tel" name="whatsapp" id="whatsapp" placeholder="Seu WhatsApp (com DDD)" required></div>
+        </div>
+
+        <div id="questoesArea"></div>
+        <button type="button" class="btn-submit" id="btnEnviar" onclick="calcular()">VER RESULTADO DO CHECK-UP</button>
+    </form>
+
+    <div id="resultado">
+        <h2 id="resTitulo"></h2>
+        <div style="font-size: 3rem; font-weight: bold;" id="resScore"></div>
+        <p id="resTexto" style="margin: 20px 0;"></p>
+        <button onclick="location.reload()" style="background: none; border: underline; cursor: pointer;">Refazer Teste</button>
     </div>
+</div>
+
 <script>
-    const dados = [
-        { t: "Comunicação", q: ["Conversamos sem brigar.","Sinto que sou ouvido(a).","Rimos juntos.","Transparência financeira.","Silêncio confortável."] },
-        { t: "Intimidade", q: ["Toque é natural.","Sinto desejo.","Vida sexual espontânea.","Corpo respeitado.","Sinto admiração."] },
-        { t: "Futuro", q: ["Planos com entusiasmo.","Objetivos comuns.","Somos uma equipe.","Envelhecer traz paz.","Investimento na relação."] },
-        { t: "Fronteiras", q: ["Priorizo o casal.","Parceiro(a) adulto.","Respeito à história.","Sogros não interferem.","Equilíbrio justo."] },
-        { t: "Resiliência", q: ["Foco no problema.","Posso ser eu mesmo(a).","Pedimos perdão.","União na crise.","Alegria com conquistas."] },
-        { t: "Vitalidade", q: ["Corpo relaxado.","Energia aumenta juntos.","Diria 'Sim' novamente.","Bem-estar é prioridade.","Peso equilibrado."] }
+    const scriptURL = 'COLE_AQUI_SEU_LINK_DO_GOOGLE_SCRIPT'; // <--- COLOQUE SEU LINK AQUI!
+
+    const perguntas = [
+        { t: "BLOCODE 1: Comunicação", q: ["Conseguimos conversar sobre assuntos difíceis sem briga.","Sinto que meu parceiro(a) realmente me escuta.","Rimos juntos de coisas bobas.","Transparência total financeira.","Silêncio confortável."] },
+        { t: "BLOCO 2: Intimidade", q: ["Contato físico é natural.","Sinto desejo.","Vida sexual espontânea.","Respeito ao corpo.","Sinto admiração."] },
+        { t: "BLOCO 3: Projetos", q: ["Planos para o futuro com entusiasmo.","Objetivos em comum.","Time diante dos problemas.","Envelhecer traz paz.","Disposição para investir."] },
+        { t: "BLOCO 4: Fronteiras", q: ["Prioridade ao casal sobre família de origem.","Parceiro adulto.","Respeito à história.","Sogros não interferem.","Equilíbrio justo."] },
+        { t: "BLOCO 5: Resiliência", q: ["Brigas focam no problema.","Posso ser eu mesmo.","Pedir e liberar perdão.","União na crise.","Alegria com conquistas."] },
+        { t: "BLOCO 6: Vitalidade", q: ["Corpo relaxado com o outro.","Energia aumenta juntos.","Diria 'Sim' novamente.","Prioriza bem-estar.","Peso equilibrado."] }
     ];
-    const area = document.getElementById('area');
-    dados.forEach((b, bi) => {
-        let h = `<div class="bloco"><h2>${b.t}</h2>`;
-        b.q.forEach((q, qi) => {
-            let id = `q${bi}${qi}`;
+
+    const area = document.getElementById('questoesArea');
+    perguntas.forEach((bloco, bIdx) => {
+        let h = `<div class="bloco"><h2>${bloco.t}</h2>`;
+        bloco.q.forEach((q, qIdx) => {
+            let id = `q_${bIdx}_${qIdx}`;
             h += `<div class="questao"><span>${q}</span><div class="opcoes">` + 
-                [1,2,3,4].map(v => `<div class="option-field"><input type="radio" name="${id}" id="${id}${v}" value="${v}" required><label for="${id}${v}" class="option-label">${v}</label></div>`).join('') + 
+                [1,2,3,4].map(v => `<div class="option-field"><input type="radio" name="${id}" id="${id}_${v}" value="${v}" required><label for="${id}_${v}" class="option-label">${v}</label></div>`).join('') + 
                 `</div></div>`;
         });
         area.innerHTML += h + `</div>`;
     });
-    function calcular() {
-        const fd = new FormData(document.getElementById('somaForm'));
+
+    async function calcular() {
+        const form = document.getElementById('somaForm');
+        const nome = document.getElementById('nome').value;
+        const whats = document.getElementById('whatsapp').value;
+        
+        if(!nome || !whats) { alert("Preencha seu nome e WhatsApp"); return; }
+        
+        const fd = new FormData(form);
         let t = 0; let count = 0;
-        for (let v of fd.values()) { t += parseInt(v); count++; }
+        for (let v of fd.values()) { if(!isNaN(v)){ t += parseInt(v); count++; } }
+        
         if (count < 30) { alert("Responda todas as 30 questões."); return; }
-        document.getElementById('somaForm').style.display='none';
-        document.getElementById('resultado').style.display='block';
-        document.getElementById('resScore').innerText = t;
+
+        document.getElementById('btnEnviar').innerText = "Enviando diagnóstico...";
+        document.getElementById('btnEnviar').disabled = true;
+
+        let diag = t >= 95 ? "Saudável" : (t >= 60 ? "Alerta" : "Crítico");
+
+        // Enviar para o Google Sheets
+        try {
+            await fetch(scriptURL, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: JSON.stringify({ nome: nome, whatsapp: whats, pontuacao: t, diagnostico: diag })
+            });
+        } catch (e) { console.error("Erro ao salvar", e); }
+
+        form.style.display = 'none';
+        document.getElementById('resultado').style.display = 'block';
+        document.getElementById('resScore').innerText = t + " pts";
+        
         const tit = document.getElementById('resTitulo');
         const txt = document.getElementById('resTexto');
-        if (t >= 95) { tit.innerText="🌿 Saudável"; txt.innerText="O foco agora é manutenção e blindagem."; }
-        else if (t >= 60) { tit.innerText="⚠️ Alerta"; txt.innerText="Existem mágoas que precisam de intervenção urgente."; }
-        else { tit.innerText="🚨 Crítico"; txt.innerText="Relação na UTI. Priorize sua saúde mental."; }
+
+        if (t >= 95) { tit.innerText = "🌿 SAUDÁVEL"; txt.innerText = "Manutenção e blindagem."; }
+        else if (t >= 60) { tit.innerText = "⚠️ ALERTA"; txt.innerText = "Existem feridas que precisam de intervenção."; }
+        else { tit.innerText = "🚨 CRÍTICO"; txt.innerText = "Relação na UTI. Decida pela sua saúde mental."; }
+        window.scrollTo(0,0);
     }
 </script>
 </body>

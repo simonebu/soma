@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Termômetro SOMA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #2c3e50; --accent: #b59410; --bg: #fbfcfc; }
+        body { font-family: 'Montserrat', sans-serif; background: var(--bg); color: var(--primary); padding: 20px; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        h1 { font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; text-align: center; color: var(--primary); }
+        .bloco { margin-bottom: 30px; padding: 20px; border-radius: 10px; border: 1px solid #eee; }
+        h2 { font-size: 1.2rem; color: var(--accent); border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        .questao { margin: 20px 0; }
+        .opcoes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 10px; }
+        .option-field { position: relative; }
+        .option-field input { position: absolute; opacity: 0; }
+        .option-label { display: block; text-align: center; padding: 10px; border: 1px solid #ddd; border-radius: 5px; cursor: pointer; }
+        input:checked + .option-label { background: var(--accent); color: white; border-color: var(--accent); }
+        .btn { width: 100%; padding: 20px; background: var(--accent); color: white; border: none; border-radius: 50px; font-weight: bold; cursor: pointer; font-size: 1.1rem; }
+        #resultado { display: none; text-align: center; padding: 30px; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header><h1>🌡️ Termômetro SOMA</h1><p style="text-align:center; font-style:italic; color:#7f8c8d">Responda de 1 a 4 conforme sua realidade atual.</p></header>
+        <form id="somaForm"><div id="area"></div><button type="button" class="btn" onclick="calcular()">VER RESULTADO</button></form>
+        <div id="resultado"><h2 id="resTitulo" style="font-size:2rem"></h2><div id="resScore" style="font-size:3rem; font-weight:bold; margin:20px 0"></div><p id="resTexto"></p><button class="btn" onclick="location.reload()" style="background:#7f8c8d; margin-top:20px">Refazer</button></div>
+    </div>
+<script>
+    const dados = [
+        { t: "Comunicação", q: ["Conversamos sem brigar.","Sinto que sou ouvido(a).","Rimos juntos.","Transparência financeira.","Silêncio confortável."] },
+        { t: "Intimidade", q: ["Toque é natural.","Sinto desejo.","Vida sexual espontânea.","Corpo respeitado.","Sinto admiração."] },
+        { t: "Futuro", q: ["Planos com entusiasmo.","Objetivos comuns.","Somos uma equipe.","Envelhecer traz paz.","Investimento na relação."] },
+        { t: "Fronteiras", q: ["Priorizo o casal.","Parceiro(a) adulto.","Respeito à história.","Sogros não interferem.","Equilíbrio justo."] },
+        { t: "Resiliência", q: ["Foco no problema.","Posso ser eu mesmo(a).","Pedimos perdão.","União na crise.","Alegria com conquistas."] },
+        { t: "Vitalidade", q: ["Corpo relaxado.","Energia aumenta juntos.","Diria 'Sim' novamente.","Bem-estar é prioridade.","Peso equilibrado."] }
+    ];
+    const area = document.getElementById('area');
+    dados.forEach((b, bi) => {
+        let h = `<div class="bloco"><h2>${b.t}</h2>`;
+        b.q.forEach((q, qi) => {
+            let id = `q${bi}${qi}`;
+            h += `<div class="questao"><span>${q}</span><div class="opcoes">` + 
+                [1,2,3,4].map(v => `<div class="option-field"><input type="radio" name="${id}" id="${id}${v}" value="${v}" required><label for="${id}${v}" class="option-label">${v}</label></div>`).join('') + 
+                `</div></div>`;
+        });
+        area.innerHTML += h + `</div>`;
+    });
+    function calcular() {
+        const fd = new FormData(document.getElementById('somaForm'));
+        let t = 0; let count = 0;
+        for (let v of fd.values()) { t += parseInt(v); count++; }
+        if (count < 30) { alert("Responda todas as 30 questões."); return; }
+        document.getElementById('somaForm').style.display='none';
+        document.getElementById('resultado').style.display='block';
+        document.getElementById('resScore').innerText = t;
+        const tit = document.getElementById('resTitulo');
+        const txt = document.getElementById('resTexto');
+        if (t >= 95) { tit.innerText="🌿 Saudável"; txt.innerText="O foco agora é manutenção e blindagem."; }
+        else if (t >= 60) { tit.innerText="⚠️ Alerta"; txt.innerText="Existem mágoas que precisam de intervenção urgente."; }
+        else { tit.innerText="🚨 Crítico"; txt.innerText="Relação na UTI. Priorize sua saúde mental."; }
+    }
+</script>
+</body>
+</html>

@@ -16,7 +16,8 @@
         h2 { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; color: var(--accent); margin-bottom: 20px; border-bottom: 2px solid #f1f1f1; padding-bottom: 10px; }
         .campo-contato { margin-bottom: 15px; }
         .campo-contato label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9rem; }
-        .campo-contato input { width: 100%; padding: 15px; border: 2px solid #eee; border-radius: 10px; font-family: 'Montserrat'; font-size: 1rem; outline: none; }
+        .campo-contato input { width: 100%; padding: 15px; border: 2px solid #eee; border-radius: 10px; font-family: 'Montserrat'; font-size: 1rem; outline: none; transition: 0.3s; }
+        .campo-contato input:focus { border-color: var(--accent); }
         .questao { margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #f9f9f9; }
         .questao-texto { font-weight: 500; font-size: 1.05rem; display: block; margin-bottom: 15px; }
         .opcoes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
@@ -39,6 +40,7 @@
         <div class="bloco">
             <h2>Suas Informações</h2>
             <div class="campo-contato"><label>Nome Completo:</label><input type="text" id="nome" placeholder="Seu nome" required></div>
+            <div class="campo-contato"><label>E-mail:</label><input type="email" id="email" placeholder="seuemail@exemplo.com" required></div>
             <div class="campo-contato"><label>WhatsApp:</label><input type="tel" id="whatsapp" placeholder="(00) 00000-0000" required></div>
         </div>
         <div id="questoesArea"></div>
@@ -83,20 +85,32 @@
     async function calcular() {
         const nome = document.getElementById('nome').value;
         const whats = document.getElementById('whatsapp').value;
-        if(!nome || !whats) { alert("Preencha Nome e WhatsApp."); return; }
+        const email = document.getElementById('email').value;
+        
+        if(!nome || !whats || !email) { alert("Por favor, preencha Nome, E-mail e WhatsApp."); return; }
         
         const fd = new FormData(document.getElementById('somaForm'));
         let t = 0; let count = 0;
         for (let v of fd.values()) { if(!isNaN(v) && v!==""){ t += parseInt(v); count++; } }
         if (count < 30) { alert("Responda todas as 30 perguntas."); return; }
 
-        document.getElementById('btnEnviar').innerText = "Analisando dados...";
+        document.getElementById('btnEnviar').innerText = "Processando...";
         document.getElementById('btnEnviar').disabled = true;
 
         let diag = t >= 95 ? "SAUDÁVEL" : (t >= 60 ? "ALERTA" : "CRÍTICO");
 
         try {
-            await fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ nome: nome, whatsapp: whats, pontuacao: t, diagnostico: diag }) });
+            await fetch(scriptURL, { 
+                method: 'POST', 
+                mode: 'no-cors', 
+                body: JSON.stringify({ 
+                    nome: nome, 
+                    whatsapp: whats, 
+                    email: email, // Enviando e-mail para a planilha
+                    pontuacao: t, 
+                    diagnostico: diag 
+                }) 
+            });
         } catch (e) { console.error(e); }
 
         document.getElementById('somaForm').style.display = 'none';
@@ -109,18 +123,18 @@
 
         if (t >= 95) { 
             tit.innerText = "🌿 ORGANISMO SAUDÁVEL"; tit.style.color = "#27ae60"; 
-            txt.innerHTML = "Seu relacionamento tem saúde, mas não baixe a guarda. Blindar a relação é um exercício diário. Conheça o método para manter essa vitalidade viva.";
+            txt.innerHTML = "Seu relacionamento tem saúde. O foco agora é blindagem. Lembre-se: cada dia a mais é um dia a menos.";
             btnVenda.innerText = "COMO BLINDAR MEU CASAMENTO";
             btnVenda.style.background = "#b59410";
         }
         else if (t >= 60) { 
             tit.innerText = "⚠️ ALERTA DE INFECÇÃO"; tit.style.color = "#f39c12"; 
-            txt.innerHTML = "Existem feridas abertas drenando a conexão de vocês. O prognóstico indica que o silêncio e as mágoas estão vencendo. <strong>Você precisa agir antes que a separação seja o único caminho.</strong>";
+            txt.innerHTML = "Existem feridas abertas drenando a conexão de vocês. Você precisa agir antes que a infecção se espalhe e a separação seja o único caminho.";
             btnVenda.innerText = "QUERO O PLANO DE RESGATE";
         }
         else { 
             tit.innerText = "🚨 ESTADO CRÍTICO (UTI)"; tit.style.color = "#c0392b"; 
-            txt.innerHTML = "Sinto muito, mas sua relação está respirando por aparelhos. Você está na 'noite escura da alma'. <strong>A boa notícia é que ainda existe uma última fronteira antes do fim.</strong> Não tome decisões definitivas agora.";
+            txt.innerHTML = "Sua relação está respirando por aparelhos. Esta relação está drenando sua vitalidade. Existe uma última fronteira antes do fim. Decida agora.";
             btnVenda.innerText = "SOCORRO: QUERO SALVAR MEU CASAMENTO";
         }
 

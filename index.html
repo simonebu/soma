@@ -24,8 +24,8 @@
         input[type="radio"] { display: none; }
         input:checked + .option-label { background: var(--accent); color: white; border-color: var(--accent); }
         .btn-submit { display: block; width: 100%; max-width: 400px; margin: 40px auto; padding: 20px; background: var(--accent); color: white; border: none; border-radius: 50px; font-weight: 600; cursor: pointer; font-size: 1.2rem; transition: 0.3s; text-align: center; text-decoration: none; }
-        .btn-whatsapp { display: none; width: 100%; max-width: 400px; margin: 20px auto; padding: 20px; background: #25d366; color: white; border-radius: 50px; font-weight: 700; text-decoration: none; font-size: 1.1rem; animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        .btn-action { display: none; width: 100%; max-width: 500px; margin: 30px auto; padding: 22px; background: #c0392b; color: white; border-radius: 50px; font-weight: 700; text-decoration: none; font-size: 1.2rem; text-align: center; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.03); } 100% { transform: scale(1); } }
         #resultado { display: none; background: white; padding: 50px; border-radius: 20px; box-shadow: var(--shadow); text-align: center; border-top: 10px solid var(--accent); }
         @media (max-width: 600px) { .opcoes { grid-template-columns: repeat(4, 1fr); } }
     </style>
@@ -37,22 +37,22 @@
 
     <form id="somaForm">
         <div class="bloco">
-            <h2>Identificação</h2>
-            <div class="campo-contato"><label>Nome Completo:</label><input type="text" id="nome" placeholder="Ex: Maria Silva" required></div>
-            <div class="campo-contato"><label>WhatsApp:</label><input type="tel" id="whatsapp" placeholder="(11) 99999-9999" required></div>
+            <h2>Suas Informações</h2>
+            <div class="campo-contato"><label>Nome Completo:</label><input type="text" id="nome" placeholder="Seu nome" required></div>
+            <div class="campo-contato"><label>WhatsApp:</label><input type="tel" id="whatsapp" placeholder="(00) 00000-0000" required></div>
         </div>
         <div id="questoesArea"></div>
-        <button type="button" class="btn-submit" id="btnEnviar" onclick="calcular()">VER MEU RESULTADO</button>
+        <button type="button" class="btn-submit" id="btnEnviar" onclick="calcular()">GERAR MEU DIAGNÓSTICO</button>
     </form>
 
     <div id="resultado">
         <div style="font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; margin-bottom: 10px;" id="resTitulo"></div>
         <div style="font-size: 3.5rem; font-weight: 700; margin-bottom: 15px;" id="resScore"></div>
-        <p id="resTexto" style="margin-bottom: 30px; font-size: 1.1rem;"></p>
+        <p id="resTexto" style="margin-bottom: 35px; font-size: 1.15rem; line-height: 1.8; color: #555;"></p>
         
-        <a href="#" id="linkWhats" target="_blank" class="btn-whatsapp">INICIAR MEU PLANO DE RESGATE</a>
+        <a href="https://silviabarrosterapias.com.br/antes-que-o-casamento-nos-separe/" id="linkVenda" class="btn-action">QUERO SALVAR MEU CASAMENTO AGORA</a>
         
-        <br><button onclick="location.reload()" style="background: none; border: none; text-decoration: underline; color: #7f8c8d; cursor: pointer; margin-top: 20px;">Refazer Teste</button>
+        <br><button onclick="location.reload()" style="background: none; border: none; text-decoration: underline; color: #999; cursor: pointer; margin-top: 30px; font-size: 0.9rem;">Refazer Teste</button>
     </div>
 </div>
 
@@ -90,7 +90,7 @@
         for (let v of fd.values()) { if(!isNaN(v) && v!==""){ t += parseInt(v); count++; } }
         if (count < 30) { alert("Responda todas as 30 perguntas."); return; }
 
-        document.getElementById('btnEnviar').innerText = "Processando...";
+        document.getElementById('btnEnviar').innerText = "Analisando dados...";
         document.getElementById('btnEnviar').disabled = true;
 
         let diag = t >= 95 ? "SAUDÁVEL" : (t >= 60 ? "ALERTA" : "CRÍTICO");
@@ -105,17 +105,26 @@
         
         const tit = document.getElementById('resTitulo');
         const txt = document.getElementById('resTexto');
-        const btnWhats = document.getElementById('linkWhats');
+        const btnVenda = document.getElementById('linkVenda');
 
-        if (t >= 95) { tit.innerText = "🌿 ORGANISMO SAUDÁVEL"; tit.style.color = "#27ae60"; txt.innerText = "Seu relacionamento tem saúde. O foco agora é manutenção e blindagem."; }
-        else if (t >= 60) { tit.innerText = "⚠️ ALERTA DE INFECÇÃO"; tit.style.color = "#f39c12"; txt.innerText = "Existem feridas que precisam de intervenção. O prognóstico não é bom se ignorado."; }
-        else { tit.innerText = "🚨 ESTADO CRÍTICO (UTI)"; tit.style.color = "#c0392b"; txt.innerText = "Sua relação está respirando por aparelhos. Decida pela sua saúde mental agora."; }
+        if (t >= 95) { 
+            tit.innerText = "🌿 ORGANISMO SAUDÁVEL"; tit.style.color = "#27ae60"; 
+            txt.innerHTML = "Seu relacionamento tem saúde, mas não baixe a guarda. Blindar a relação é um exercício diário. Conheça o método para manter essa vitalidade viva.";
+            btnVenda.innerText = "COMO BLINDAR MEU CASAMENTO";
+            btnVenda.style.background = "#b59410";
+        }
+        else if (t >= 60) { 
+            tit.innerText = "⚠️ ALERTA DE INFECÇÃO"; tit.style.color = "#f39c12"; 
+            txt.innerHTML = "Existem feridas abertas drenando a conexão de vocês. O prognóstico indica que o silêncio e as mágoas estão vencendo. <strong>Você precisa agir antes que a separação seja o único caminho.</strong>";
+            btnVenda.innerText = "QUERO O PLANO DE RESGATE";
+        }
+        else { 
+            tit.innerText = "🚨 ESTADO CRÍTICO (UTI)"; tit.style.color = "#c0392b"; 
+            txt.innerHTML = "Sinto muito, mas sua relação está respirando por aparelhos. Você está na 'noite escura da alma'. <strong>A boa notícia é que ainda existe uma última fronteira antes do fim.</strong> Não tome decisões definitivas agora.";
+            btnVenda.innerText = "SOCORRO: QUERO SALVAR MEU CASAMENTO";
+        }
 
-        // Configurar Link do WhatsApp
-        const msg = window.encodeURIComponent(`Olá Simone! Acabei de fazer o Termômetro SOMA.\n\nNome: ${nome}\nPontuação: ${t} pontos (${diag})\n\nQuero iniciar meu Plano de Resgate.`);
-        btnWhats.href = `https://wa.me/5511994215606?text=${msg}`;
-        btnWhats.style.display = 'block';
-
+        btnVenda.style.display = 'block';
         window.scrollTo(0,0);
     }
 </script>
